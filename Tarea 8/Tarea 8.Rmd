@@ -1,0 +1,97 @@
+---
+title: "Taller 8"
+author: "Juan Pablo Alfonso"
+date: "10/5/2021"
+output: pdf_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**PUNTO 1**
+
+```{r}
+setwd("C:/Users/Juan Pablo/Documents/Econometrics-1")
+
+
+cint <- read.csv("cinturon.csv", stringsAsFactors = FALSE)
+library(lmtest)
+
+```
+
+a
+```{r}
+
+```
+
+b
+```{r}
+lm1 <- lm(tasa_fatal ~ tasa_cint, data = cint)
+summary(lm1)
+
+```
+Son significativos, hay qué ver cómo cambia con fx fijos
+Podría haber sesgo de variable omitida
+
+durbin watson test:
+mide autocorrelación serial de primer orden:
+```{r}
+dwtest(lm1)
+```
+2:no auto correlación 
+0 y 2: auto correlación positiva:
+no estoy bien de auto correlación bastante grande.
+2 y 4: auto correlación negativa
+
+otra forma de estimar los efectos fijos:
+
+**c**
+```{r}
+lm2 <- lm(tasa_fatal ~ tasa_cint + vel_65
+          + vel_70 
+          + niv_alc08
+          +ed_alc21
+          + edad , data = cint)
+summary(lm2)
+dwtest(lm2)
+```
+intecepto sigue muy significativo y capuró la diferncia por estados de velocidad límite de 65
+el intercepto estaba sobre estimado
+tasa_cint estaba sub estimado
+
+DPFJ: Diferencias que son propias de estados con limite 65
+
+
+d)
+```{r}
+#putno estado sin intercepto
+tablaestado<-table(cint$estado)
+tablaestado
+
+lmestado <- lm(tasa_fatal ~ tasa_cint + factor(estado)-1, data = cint)
+summary(lmestado)
+
+
+DTESTADO<-dwtest(lmestado)
+print(DTESTADO)
+```
+MEJORÓ EL DURBIN WATSON
+
+Comparación d
+
+```{r}
+summary(lmestado)$coef[1]
+
+
+
+```
+
+E)
+```{r}
+añoslm <- lm(tasa_fatal ~ tasa_cint + factor(estado) + factor(ano)-1 , data = cint)
+summary(añoslm)
+```
+
+```
