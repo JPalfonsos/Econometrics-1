@@ -9,7 +9,21 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+**Definición de variables**
+tasa_fatal: número de fatalidades por millón de millas transitables en el estado
+- tasa_cint: tasa de uso del cinturón
+- vel_65: binaria 1 para estados con límite de velocidad 65 millas/hora
+- vel_70: binaria 1 para estados con límite de velocidad 70 millas/hora
+- niv_alc08: binaria 1 para estados en donde el nivel alcohólico máximo es .08%
+- ed_alc21: binaria 1 para estados en donde la edad mínima consumo alcohol 21
+- ingreso: ingreso per cápita en el estado
+- edad: media de la edad en el estado
+- primario: dummy 1 si en el estado la policía puede detener por no uso cinturón
+- secundario: dummy 1 sin el estado la policía solo detiene por otras violaciones
+- mmt: millones de millas transitables
+- cod: código numérico del estado
+- ano: año de la observación
+- estado: abreviación postal de cada estado
 **PUNTO 1**
 
 ```{r}
