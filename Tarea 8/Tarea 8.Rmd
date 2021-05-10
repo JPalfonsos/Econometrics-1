@@ -32,11 +32,18 @@ setwd("C:/Users/Juan Pablo/Documents/Econometrics-1")
 
 cint <- read.csv("cinturon.csv", stringsAsFactors = FALSE)
 library(lmtest)
-
+library(tinytex)
+library(stargazer)
+library(ggplot2)
+library(tidyverse)
+library(datasets)
+library(rlang)
 ```
 
-a
+**Punto A**
+1) Seleccionar los 5 estados que tuvieron mayor número de fatalidades en 1983
 ```{r}
+as_tibble(cint)
 
 ```
 
