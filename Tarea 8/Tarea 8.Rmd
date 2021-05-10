@@ -50,7 +50,6 @@ library(dplyr)
 cint83<-filter(cint,cint$ano=="1983") %>%
   arrange(desc(tasa_fatal)) %>%
   slice(1:5)
-
 cint83
 ```
 Los 5 estados que en 1983 tuvieron el mayor número de muertes en carretera son:
@@ -62,6 +61,51 @@ Los 5 estados que en 1983 tuvieron el mayor número de muertes en carretera son:
 - NV: Nevada
 
 Ahora miraremos la evolución del número de fatalidades en carretera desde 1983 hasta 1997.
+
+
+```{r}
+cint5<-cint%>%
+  filter(estado %in% c("NM","AK","MS","MT","MT","NV"))
+cint5
+años<-cint5$ano
+#cada estado
+
+NM <- cint%>%
+  filter(cint$estado== "NM")
+NMY<-NM$tasa_fatal
+NMY
+
+AK <- cint%>%
+  filter(cint$estado== "AK")
+AKY<-AK$tasa_fatal
+AKY
+
+MS <- cint%>%
+  filter(cint$estado== "MS")
+MSY<-MS$tasa_fatal
+
+MT <- cint%>%
+  filter(cint$estado== "MT")
+MTY<-MT$tasa_fatal
+
+NV <- cint%>%
+  filter(cint$estado== "NV")
+NVY<-NV$tasa_fatal
+
+data<- data.frame(años,NMY,AKY,MSY,MTY,NVY)
+data<- data%>% 
+  slice(1:15)
+
+data
+
+```
+
+
+
+
+
+
+
 
 
 
