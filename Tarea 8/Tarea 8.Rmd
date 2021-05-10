@@ -31,6 +31,7 @@ setwd("C:/Users/Juan Pablo/Documents/Econometrics-1")
 
 
 cint <- read.csv("cinturon.csv", stringsAsFactors = FALSE)
+
 library(lmtest)
 library(tinytex)
 library(stargazer)
@@ -38,14 +39,32 @@ library(ggplot2)
 library(tidyverse)
 library(datasets)
 library(rlang)
+library(tibble)
+library(dplyr)
 ```
 
 **Punto A**
-1) Seleccionar los 5 estados que tuvieron mayor número de fatalidades en 1983
-```{r}
-as_tibble(cint)
+1) Estados en 1983
 
+```{r}
+cint83<-filter(cint,cint$ano=="1983") %>%
+  arrange(desc(tasa_fatal)) %>%
+  slice(1:5)
+
+cint83
 ```
+Los 5 estados que en 1983 tuvieron el mayor número de muertes en carretera son:
+
+- NM:Nuevo México
+- AK: Alaska
+- MS: Mississippi
+- MT: Montana
+- NV: Nevada
+
+Ahora miraremos la evolución del número de fatalidades en carretera desde 1983 hasta 1997.
+
+
+
 
 b
 ```{r}
