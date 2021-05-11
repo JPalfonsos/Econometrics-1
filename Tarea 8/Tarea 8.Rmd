@@ -350,3 +350,16 @@ f_test1 <- numerador1/denominador1
 f_test1
 
 ```
+_Valor crítico para la prueba F:_
+
+```{r}
+qf(0.95,(765-8),(8-2))
+```
+Teniendo en cuenta nuestras hipótesis:
+$$h0: B1=0$$
+$$h1: B_1\ne0$$
+Valor critico: 3.674587
+
+Prueba F: 108.3615
+
+*Punto 1G*
