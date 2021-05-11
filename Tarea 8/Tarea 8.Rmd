@@ -46,8 +46,10 @@ library(viridis)
 library(reshape2)
 ```
 
-**Punto A**
-1) Estados en 1983
+**Punto 1a**
+Inspirados en el paper de Cohen y Einav, 2003, harémos un análisis de la efectividad de reglas e incentivos sobre la conducción en carretera para disminuir los accidentes en estados norteamericanos, usaremos una serie de tiempo segregada por estados desde 1983 hasta 1997.
+
+Primero revisaremos gráficamente la evolución de muertes de los 5 estados que en 1983 tuvieron el mayor número de muertes en carretera son:
 
 ```{r}
 cint83<-filter(cint,cint$ano=="1983") %>%
@@ -55,7 +57,7 @@ cint83<-filter(cint,cint$ano=="1983") %>%
   slice(1:5)
 cint83
 ```
-Los 5 estados que en 1983 tuvieron el mayor número de muertes en carretera son:
+
 
 - NM:Nuevo México
 - AK: Alaska
@@ -63,25 +65,23 @@ Los 5 estados que en 1983 tuvieron el mayor número de muertes en carretera son:
 - MT: Montana
 - NV: Nevada
 
-Ahora miraremos la evolución del número de fatalidades en carretera desde 1983 hasta 1997.
-
-
+Proyectando los datos para estos 5 estados desde 1983 hasta 1997 encontramos:
 ```{r}
 cint5<-cint%>%
   filter(estado %in% c("NM","AK","MS","MT","MT","NV"))
-cint5
+
 años<-cint5$ano
 #cada estado
 
 NM <- cint%>%
   filter(cint$estado== "NM")
 Nuevo_México<-NM$tasa_fatal
-NMY
+
 
 AK <- cint%>%
   filter(cint$estado== "AK")
 Alaska<-AK$tasa_fatal
-Alaska
+
 
 MS <- cint%>%
   filter(cint$estado== "MS")
@@ -99,35 +99,34 @@ data<- data.frame(años,Nuevo_México,Alaska,Mississippi,Montana,Nevada)
 data<- data%>% 
   slice(1:15)
 
-data
 
 ```
-**GRÁFICA:**
+
 
 ```{r message=FALSE, warning=FALSE}
 
 largos<-melt(data, id ="años")
-GP<-ggplot(largos, aes(x=años,
-                   y=value,
-                   color=variable))+
-  geom_line()+scale_color_viridis(discrete = TRUE) +
+GP<-ggplot(largos, aes(x=años, y=value, color=variable)) +
+    geom_line() + 
+    scale_color_viridis(discrete = TRUE) +
     theme_ipsum() +
     ylab("Fatalidades por millón de millas transitables")+
-  xlab("1983-1997")
+    xlab("1983-1997")
 GP + labs(title = "Evolución de las muertes en carretera",
-        subtitle = "De los 5 estados en U.S que tuvieron la mayor cantidad de muertos",
-        caption = "Inspirado en el paper de Cohen y Einav, 2003")
+    subtitle = "De los 5 estados en U.S que tuvieron la mayor cantidad de muertos en 1983",
+    caption = "Inspirado en el paper de Cohen y Einav, 2003")
 
 ```
+La cantidad de muertes disminuyó para todos los que más muertes tenían en carretera, entre los factores que pudieron influir se encuentran los límites de velocidad, establecer límites de velocidad y respectivas multas, edad mínima de consumo de alcohol y limite máximo en pruebas de alcoholemia. Revisaremos el impacto de cada una de estas variables sobre la disminución de muertes que acabamos de ver gráficamente.
+
+ 
 
 
 
 
 
 
-
-
-b
+*Punto 1b*
 ```{r}
 lm1 <- lm(tasa_fatal ~ tasa_cint, data = cint)
 summary(lm1)
