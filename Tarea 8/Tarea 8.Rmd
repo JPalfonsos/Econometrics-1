@@ -425,6 +425,10 @@ liber<-liber %>%
   mutate(delito = replace(delito,delito==4,"Hurto"))
 ```
 
+```{r}
+strin
+```
+
 *Punto 2A*
 
 ¿Cuántos de los individuos en la muestra violaron los términos de la libertad condicional? En número y como porcentaje de la muestra.
@@ -435,12 +439,12 @@ totales
 
 ```
 Recordando, si incump es 1 es porque se violaron los términos, de los presos, 78 de ellos violaron los terminos.
-```{r}
+```{r echo=FALSE}
 total <- sum(complete.cases(liber))
 total
 ```
 De 675 presos, 78 violaron, es decir que:
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 percentage<-78/total
 percentage
 ```
@@ -459,12 +463,34 @@ nrow(test)/nrow(liber)
 ```
 _Comprobando a través de incump:_
 
+_Punto 2B_
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 mean(liber$incump)
 mean(train$incump)
 mean(test$incump)
 ```
-Siguq quedando aproximadamente el 11% en la base de datos principal, en el train set y en el test set.
+Sigue quedando aproximadamente el 11% en la base de datos principal, en el train set y en el test set.
 
+
+**Punto 2c**
+```{r message=FALSE, warning=FALSE, include=FALSE}
+str(train)
+str(test)
+```
+
+
+_Entrene el modelo 1 de regresión logísita:_
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+glm1 <- glm(incump ~ ., data = train, family = "binomial")
+stargazer(glm1, 
+          header=FALSE,
+          type = "text",
+          title="Modelo GML1",
+          digits=3, single.row=FALSE,
+          intercept.bottom=TRUE,
+          df = FALSE, style = "qje")
+```
 
 
