@@ -425,3 +425,46 @@ liber<-liber %>%
   mutate(delito = replace(delito,delito==4,"Hurto"))
 ```
 
+*Punto 2A*
+
+¿Cuántos de los individuos en la muestra violaron los términos de la libertad condicional? En número y como porcentaje de la muestra.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+totales<-liber %>% count(incump)
+totales
+
+```
+Recordando, si incump es 1 es porque se violaron los términos, de los presos, 78 de ellos violaron los terminos.
+```{r}
+total <- sum(complete.cases(liber))
+total
+```
+De 675 presos, 78 violaron, es decir que:
+```{r}
+percentage<-78/total
+percentage
+```
+El 11.55% de los presos violaron los términos de libertad
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(caTools)
+set.seed(144)
+split = sample.split(liber$incump, SplitRatio = 0.7)
+train = subset(liber, split == TRUE)
+test = subset(liber, split == FALSE)
+#Comprobando cantidad de split:
+nrow(train)/nrow(liber)
+nrow(test)/nrow(liber)
+
+```
+_Comprobando a través de incump:_
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+mean(liber$incump)
+mean(train$incump)
+mean(test$incump)
+```
+Siguq quedando aproximadamente el 11% en la base de datos principal, en el train set y en el test set.
+
+
+
