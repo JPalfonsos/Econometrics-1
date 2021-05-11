@@ -385,3 +385,43 @@ Prueba F: 108.3615
 
 *Punto 1G*
 
+
+
+
+## PUNTO 2
+
+```{r}
+liber <- read.csv("libertad.csv", stringsAsFactors = FALSE)
+```
+
+Cambiar variable de Estado:
+```{r}
+liber<-liber %>%
+    mutate(estado = replace(estado,estado==1,"otro")
+    )
+liber<-liber %>% 
+  mutate(estado = replace(estado,estado==2,"Ohio")  )
+
+liber<-liber %>%
+  mutate(estado = replace(estado,estado==3,"Arkansas") )
+
+liber<-liber %>% 
+  mutate(estado = replace(estado,estado==4,"Florida"))
+
+```
+
+Cambiar variable Delito:
+```{r}
+liber<-liber %>%
+    mutate(delito = replace(delito,delito==1,"Otros")
+    )
+liber<-liber %>% 
+  mutate(delito = replace(delito,delito==2,"Tránsito")  )
+
+liber<-liber %>%
+  mutate(delito = replace(delito,delito==3,"Tráfico drogas") )
+
+liber<-liber %>% 
+  mutate(delito = replace(delito,delito==4,"Hurto"))
+```
+
