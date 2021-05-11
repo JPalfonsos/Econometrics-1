@@ -41,6 +41,9 @@ library(datasets)
 library(rlang)
 library(tibble)
 library(dplyr)
+library(hrbrthemes)
+library(viridis)
+library(reshape2)
 ```
 
 **Punto A**
@@ -72,36 +75,47 @@ años<-cint5$ano
 
 NM <- cint%>%
   filter(cint$estado== "NM")
-NMY<-NM$tasa_fatal
+Nuevo_México<-NM$tasa_fatal
 NMY
 
 AK <- cint%>%
   filter(cint$estado== "AK")
-AKY<-AK$tasa_fatal
-AKY
+Alaska<-AK$tasa_fatal
+Alaska
 
 MS <- cint%>%
   filter(cint$estado== "MS")
-MSY<-MS$tasa_fatal
+Mississippi<-MS$tasa_fatal
 
 MT <- cint%>%
   filter(cint$estado== "MT")
-MTY<-MT$tasa_fatal
+Montana<-MT$tasa_fatal
 
 NV <- cint%>%
   filter(cint$estado== "NV")
-NVY<-NV$tasa_fatal
+Nevada<-NV$tasa_fatal
 
-data<- data.frame(años,NMY,AKY,MSY,MTY,NVY)
+data<- data.frame(años,Nuevo_México,Alaska,Mississippi,Montana,Nevada)
 data<- data%>% 
   slice(1:15)
 
 data
 
 ```
+**GRÁFICA:**
 
+```{r message=FALSE, warning=FALSE}
 
+largos<-melt(data, id ="años")
+ggplot(largos, aes(x=años,
+                   y=value,
+                   color=variable))+
+  geom_line()+scale_color_viridis(discrete = TRUE) +
+    ggtitle("Popularity of American names in the previous 30 years") +
+    theme_ipsum() +
+    ylab("Number of babies born")
 
+```
 
 
 
