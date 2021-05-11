@@ -171,9 +171,7 @@ _Modelo 1:_
 
 $$ tasa fatal=B_0 + B_1tasacint_i+E_i$$
 
-
-
-```{r}
+```{r message=FALSE, warning=FALSE}
 lm1 <- lm(tasa_fatal ~ tasa_cint, data = cint)
 stargazer(lm1, 
           header=FALSE,
@@ -184,14 +182,16 @@ stargazer(lm1,
           covariate.labels=c("Tasa uso del cinturón"),
           df = FALSE, style = "qje")
 ```
+
 Nuestras hipótesis son:
 $$h_o: B_1=0$$
 $$h_o: B_1\ne0$$
+
 Del primer modelo inferimos que:
 
--En promedio cuando en ningún estado se usa el cinturón de seguridad hay 0.026 muertes por millón de millas
+- En promedio cuando en ningún estado se usa el cinturón de seguridad hay 0.026 muertes por millón de millas
 
--En promedio entre más personas usan el cinturón, las muertes por millón de millas disminuyen en todos los estados
+- En promedio entre más personas usan el cinturón, las muertes por millón de millas disminuyen en todos los estados
 
 Por ende rechazamos la hipótesis nula, con una confianza del 99% la tasa de uso de cinturón afecta la variabilidad de la cantidad de muertos en los estados de forma negativa. 
 
@@ -205,9 +205,9 @@ Realizaremos el test de durbin watson, este nos permitirá medir la autocorrelac
 ```{r echo=FALSE}
 dwtest(lm1)
 ```
-_La forma de interpretarlo es:_
+_La forma de interpretar Durbin Watson es:_
 
-**2:no auto correlación **
+**2: No auto correlación **
 
 **0 y 2: auto correlación positiva:**
 
@@ -221,7 +221,8 @@ Ahora exploraremos qué ocurre si incluimos más variables a nuestro modelo
 
 **Punto 1c**
 
-*Moldelo 2*
+_Modelo 2_
+
 ```{r message=FALSE, warning=FALSE}
 cint$ln_ingreso <- log(cint$ingreso)
 
@@ -243,21 +244,24 @@ stargazer(lm2,
 De modelo 2 inferimos que el intercepto sigue muy significativo (***) y se capturó la diferencia por estados de velocidad límite de 65 ya que este límite 65 no fue significativo en este segundo modelo
 
 El intercepto estaba sobre estimado, pasamos de (0.026***) a (0.197 con significancia del 99% )
--0.012***  0.004*** tasa_cint estaba sub estimado
+La tasa de cinturón estaba sub estimado, (-0.012*** Modelo 1) a ( 0.004*** Modelo 2) tasa_cint estaba sub estimado.
 
-DPFJ: Diferencias que son propias de estados con limite 65
+Las variables que no fueron significativas en este modelo son vel_6, ed_alc21 y edad
+es decir que ni el límite de velocidad de 65 ni que la edad mímina de conducción de 21 años son estadísticamente significativas para afirmar que afectan la variabilidad de la cantidad de muertos por milla de carreterra.
 
+Al hacer el tesde de Durbin Watson, encontramos:
 ```{r}
 dwtest(lm2)
 ```
+Cuando segregamos por más variables encontramos que la autocorrelación disminuye  desde 0.33962 hacia 0.456, cada vez más demostramos que pueden haber variables omitidas o diferencias idiosincráticas para demostrarlo construiremos un modelo 3 con efectos fijos para los estados.
 
+**Punto 1D**
 
-d)
+_Efectos fijos por estado sin intercepto_
+
+Ahora usaremos cada uno de los 51 estados como una variable y así segregregamos las diferencias idiosincráticas de los estados:
+
 ```{r}
-#punto estado sin intercepto
-tablaestado<-table(cint$estado)
-
-
 lmestado <- lm(tasa_fatal ~ tasa_cint + factor(estado)-1, data = cint)
 stargazer(lmestado, 
           header=FALSE,
@@ -268,18 +272,22 @@ stargazer(lmestado,
           covariate.labels=c("Tasa de uso cinturon"),
           df = FALSE, style = "qje")
 
-DTESTADO<-dwtest(lmestado)
 
 ```
+Interpretamos que:
+
+haciendo durbin:
+```{r}
+dwtest(lmestado)
+```
+
+
 MEJORÓ EL DURBIN WATSON
 
 Comparación d
 
 ```{r}
 summary(lmestado)$coef[1]
-
-
-
 ```
 
 E)
