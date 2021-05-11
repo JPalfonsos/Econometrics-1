@@ -478,7 +478,8 @@ str(test)
 ```
 
 
-_Entrene el modelo 1 de regresión logísita:_
+_Entrene el modelo 1 de regresión logísticaa:_
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 glm1 <- glm(incump ~ ., data = train, family = "binomial")
@@ -532,6 +533,8 @@ print(-1.645-0.0887)
 Cuando la persona es de raza blanca y esto es la única variable que se tiene en cuenta, se afirma que ser blanco hace que la probabilidad de que viole los términos de la libertad condcional varie -1.7337, verlo de esta forma implica bias de racismo, pero es estadísticamente significativo.
 
 
+
+
 **Punto E**
 
 _Juez usando el modelo_
@@ -570,6 +573,11 @@ Caso1
 ```
 La probabilidad del caso 1 con un hombre de estas caracteristicas disminuye 6.345%
 
+**TRAMPA DE LAS DUMMYS:**
+
+En el modelo 1 GLM1,  no nos preocupaba la trampa de las dummys porque, para el caso 1, donde se evalua al hombre, se tiene que la primer variable en orden alfabético que el One Hot Endoding Elimina no afecta el B7 (Delito, la cual no era desde un inicio una variable dummy sino un factor), sin embargo, para el siguiente caso B7, toma valor de Hurto, es decir que es la primera que se elimina porque se convierte en la base: como los coeficientes de l os regresores son constantes pero el intercepto varia entre individuos se preferirá usar el truco de ponerle -1 al modelo, de esta forma, eliminamos el intercepto pero pasa a ser el coeficiente de B7 en el factor Hurto (que se me eliminó porque Hurto>Otros>Tráfico de Drogas alfabéticamente H>O>T)
+
+El intercepto anterior mente era 
 
 _Caso 2:_
 
@@ -588,7 +596,20 @@ _Caso 2:_
 - B7: Concurso: no cometió varios delitos: 0
 
 - B8: Delito relacionado con hurto: 2
+(Para hacer delito=Hurto, se eliminó el intercepto con(-1) en el modelo, esto se puede hacer porquelos regresores son constantes pero el intercepto varia entre individuos)
 
-$$incump =  B_0 + B_1Hombre +B_2Raza + B_3Edad + B_4EstadoOhio +B_5TiempoReclu +B_6SentMax + B_7Concurso + B9_DelitoTráficoDrogas$$
-Reemplazando:
-$$incump =  -1.645 + 0.387(0) -0.887(0)  -0.0002(40)  -0.392(1) -0.124 (8) + 0.080(6)+  1.612(0)-0.266(1)$$
+$$incump = B_1Hombre +B_2Raza + B_3Edad + B_4EstadoOhio +B_5TiempoReclu +B_6SentMax + B_7Concurso + B_9DelitoHurto$$
+Reemplazando :
+$$incump =   0.387(0) -0.887(0)  -0.0002(40)  -0.392(1) -0.124 (8) + 0.080(6)+  1.612(0)-1.645(1)$$ 
+Operando:
+```{r}
+probmujer<-  -0.0002*(40)  -0.392*(1) -0.124 *(8) + 0.080*(6)-1.645*(1)
+probmujer
+```
+Entonces, la probabilidad de que una mujer con dichas caracteristicas viole la libertad condicional cae -2.557
+
+
+
+
+
+
