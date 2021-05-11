@@ -527,7 +527,7 @@ $$incump = B_0 + B_2Raza $$
 Reemplazando los coefficientes de Stargazer:
 
 $$incump = -1.645-0.887(1) $$
-```{r echo=FALSE}
+```{r echo=TRUE}
 print(-1.645-0.0887)
 ```
 Cuando la persona es de raza blanca y esto es la única variable que se tiene en cuenta, se afirma que ser blanco hace que la probabilidad de que viole los términos de la libertad condcional varie -1.7337, verlo de esta forma implica bias de racismo, pero es estadísticamente significativo.
@@ -567,7 +567,7 @@ Reemplazando:
 
    
 $$incump =  -1.645 + 0.387(1) -0.887(1)  -0.0002(30)  -4.232(1) -0.124 (4) + 0.080(10)+  1.612(0)-0.266(1)$$
-```{r}
+```{r echo=TRUE}
 Caso1= (-1.645 + 0.387 -0.887-0.0002*(30)-4.232-0.124*(4) + 0.080*(10)- 0.266*(1))
 Caso1
 ```
@@ -602,7 +602,7 @@ $$incump = B_1Hombre +B_2Raza + B_3Edad + B_4EstadoOhio +B_5TiempoReclu +B_6Sent
 Reemplazando :
 $$incump =   0.387(0) -0.887(0)  -0.0002(40)  -0.392(1) -0.124 (8) + 0.080(6)+  1.612(0)-1.645(1)$$ 
 Operando:
-```{r}
+```{r echo=TRUE}
 probmujer<-  -0.0002*(40)  -0.392*(1) -0.124 *(8) + 0.080*(6)-1.645*(1)
 probmujer
 ```
@@ -610,7 +610,7 @@ Entonces, la probabilidad de que una mujer con dichas caracteristicas viole la l
 
 **Punto G: Probabilidades de cada individuo**
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 predictions <- predict(glm1, newdata = test, type = "response")
 predictions
 ```
@@ -630,7 +630,7 @@ max(predictions)
 ```
 **En terminos de ODDS**
 
-```{r echo=TRUE, warning=TRUE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 odds_ob1 = predictions[1]/(1-predictions[1])
 
 odds_ob1
@@ -638,12 +638,13 @@ odds_ob1
 Por cada punto de incumplir, tiene 0.035 de ser bueno y cumplir la libertad condicional.
 
 
-**Punto I, Matrzz de confusión**
-```{r echo=FALSE}
+**Punto I, Matriz de confusión**
+```{r include=FALSE}
 pred_0_1 <- ifelse(predictions > 0.5, 1, 0)
 pred_0_1
 ```
-```{r}
+
+```{r echo=FALSE}
 table(test$incump, pred_0_1)
 ```
 TN FP
@@ -666,11 +667,25 @@ accuracy. Usando un threshold de 0.5.
 #Accuracy (TP+TN)/(TP+TN+FP+FN)
 (12+167)/(12+167+12+11)
 
+accurate <- test$incump == pred_0_1
+mean(accurate)
+
 ```
 La sensibilidad del modelo:  0.5217391
 La especificdad del modeo: 0.9329609
-y la precisión del modelo: 0.8861386
+y la precisión del modelo: 0.8861386 el cual también es el promedio de la precisión.
 
+**Punto K**
+
+_AUC del Modelo:_
+
+```{r}
+library(ROCR)
+predice = prediction(predictions, test$incump)
+as.numeric(performance(predice, "auc")@y.values)
+```
+
+Es un buen valor para clasificación:  0.8945834 es un clasificador fuerte
 
 
 
