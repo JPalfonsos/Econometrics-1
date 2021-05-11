@@ -425,9 +425,7 @@ liber<-liber %>%
   mutate(delito = replace(delito,delito==4,"Hurto"))
 ```
 
-```{r}
-strin
-```
+
 
 *Punto 2A*
 
@@ -531,7 +529,66 @@ $$incump = -1.645-0.887(1) $$
 ```{r echo=FALSE}
 print(-1.645-0.0887)
 ```
-Cuando la persona es de raza blanca y esto es la única variable que se tiene en cuenta, se afirma que ser blanco hace que la probabilidad de que viole los términos de la libertad bajo fianza varie -1.7337, verlo de esta forma implica bias de racismo, pero es estadísticamente significativo.
+Cuando la persona es de raza blanca y esto es la única variable que se tiene en cuenta, se afirma que ser blanco hace que la probabilidad de que viole los términos de la libertad condcional varie -1.7337, verlo de esta forma implica bias de racismo, pero es estadísticamente significativo.
 
 
 **Punto E**
+
+_Juez usando el modelo_
+
+Caracterísiticas:
+ 
+- B1: Hombre: 1
+
+- B2:Raza blanca: 1
+
+- B3: 30 años:
+
+- B4: Estado Florida: 4
+
+- B5: Tiempo Recluido: 4 meses
+
+- B6: Sentencia máxima 10 meses
+
+- B7: Concurso: no cometió varios delitos: 0
+
+- B8: Delito relacionado con drogas: 3
+
+
+¿Cuáles son las probabilidades de que viole la libertad condicional?
+
+El modelo sería:
+
+$$incump =  B_0 + B_1Hombre +B_2Raza + B_3Edad + B_4EstadoFlorida +B_5TiempoReclu +B_6SentMax + B_7Concurso + B9_DelitoTráficoDrogas$$
+Reemplazando:
+
+   
+$$incump =  -1.645 + 0.387(1) -0.887(1)  -0.0002(30)  -4.232(1) -0.124 (4) + 0.080(10)+  1.612(0)-0.266(1)$$
+```{r}
+Caso1= (-1.645 + 0.387 -0.887-0.0002*(30)-4.232-0.124*(4) + 0.080*(10)- 0.266*(1))
+Caso1
+```
+La probabilidad del caso 1 con un hombre de estas caracteristicas disminuye 6.345%
+
+
+_Caso 2:_
+
+- B1: Mujer: 0
+
+- B2: Raza Negra: 0
+
+- B3: 40 años:
+
+- B4: Estado Ohio: 2
+
+- B5: Tiempo Recluida: 8 meses
+
+- B6: Sentencia máxima: 6 meses
+
+- B7: Concurso: no cometió varios delitos: 0
+
+- B8: Delito relacionado con hurto: 2
+
+$$incump =  B_0 + B_1Hombre +B_2Raza + B_3Edad + B_4EstadoOhio +B_5TiempoReclu +B_6SentMax + B_7Concurso + B9_DelitoTráficoDrogas$$
+Reemplazando:
+$$incump =  -1.645 + 0.387(0) -0.887(0)  -0.0002(40)  -0.392(1) -0.124 (8) + 0.080(6)+  1.612(0)-0.266(1)$$
