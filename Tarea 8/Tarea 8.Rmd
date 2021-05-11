@@ -492,5 +492,21 @@ stargazer(glm1,
           intercept.bottom=TRUE,
           df = FALSE, style = "qje")
 ```
+**Interpretación:**
+
+Comencemos por raza con un coeficiente de -0.887, si este regresor es de 1, es porque el preso es blanco, es decir que si efectivamente es blanco su probabilidad de incumplir los términos de la libertal disminuye, si es 0; de otra raza, esta probabilidad no disminuye.
+
+La siguiente variable significativa es "estado" cuando es Florida (4.232***), es decir que cuando los presos son de florida su probabilidad de incurrir en la violación del término de la libertad aumenta.
+
+y finalmente la última variable que influye sinificativamente es Concurso (1 varios delitos,0 otro caso) (1.612***), es decir que, si cometió varios delitos, su probabilidad de incurrir en la violación del término de la libertal también aumenta.
+
+Cuantitativamente podemos afirmar que los presos que se elijan para su libertad no deberían ser de Florida, ser de piel diferente a blanca y haber cometido varios delitos.
+
+
+
+*Puntp 
+
+
+
 
 
