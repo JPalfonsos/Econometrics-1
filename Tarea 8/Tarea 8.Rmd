@@ -9,8 +9,10 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
+
 **Definición de variables**
-tasa_fatal: número de fatalidades por millón de millas transitables en el estado
+
+- tasa_fatal: número de fatalidades por millón de millas transitables en el estado
 
 - tasa_cint: tasa de uso del cinturón
 
@@ -59,6 +61,8 @@ library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(reshape2)
+library(knitr)
+library(kableExtra)
 ```
 
 **Punto 1a**
@@ -70,8 +74,20 @@ Primero revisaremos gráficamente la evolución de muertes de los 5 estados que 
 ```{r echo=FALSE}
 cint83<-filter(cint,cint$ano=="1983") %>%
   arrange(desc(tasa_fatal)) %>%
-  slice(1:5)
-cint83
+  slice(1:5) 
+cint83 <- 
+  select(cint83, -c(cod,mmt,tasa_cint,vel_65,vel_70,ed_alc21,niv_alc08,ingreso,edad,primario,secundario))
+
+
+
+top_5_estados<-kable( cint83 , caption = "Top 5 estados con más tasas de fatalidad en 1983"
+       , align = c('l', 'c', 'r')
+       , col.names = c("Estado","Año","Tasa Fata")
+       , row.names = TRUE
+       , digits = 10
+       , format.args = list( decimal.mark = ",")
+      )
+top_5_estados
 ```
 
 
@@ -159,53 +175,101 @@ $$ tasa fatal=B_0 + B_1tasacint_i+E_i$$
 
 ```{r}
 lm1 <- lm(tasa_fatal ~ tasa_cint, data = cint)
-summary(lm1)
+stargazer(lm1, 
+          header=FALSE,
+          type = "text",
+          title="Modelo 1",
+          digits=3, single.row=FALSE,
+          intercept.bottom=TRUE, 
+          covariate.labels=c("Tasa uso del cinturón"),
+          df = FALSE, style = "qje")
 ```
+Nuestras hipótesis son:
+$$h_o: B_1=0$$
+$$h_o: B_1\ne0$$
+Del primer modelo inferimos que:
 
-Del primero mSon significativos, hay qué ver cómo cambia con fx fijos
-Podría haber sesgo de variable omitida
+-En promedio cuando en ningún estado se usa el cinturón de seguridad hay 0.026 muertes por millón de millas
 
-durbin watson test:
-mide autocorrelación serial de primer orden:
-```{r}
+-En promedio entre más personas usan el cinturón, las muertes por millón de millas disminuyen en todos los estados
+
+Por ende rechazamos la hipótesis nula, con una confianza del 99% la tasa de uso de cinturón afecta la variabilidad de la cantidad de muertos en los estados de forma negativa. 
+
+En promedio el 16.2% (r^2: 0.162) de la variabilidad de los muertos por millón de millas en carreteras son explicados por la tasa de uso de cinturón.
+
+
+Sin embargo podríamos caer en un sesgo de variable omitida, hay qué ver cómo cambia con efectos fijos.
+
+Realizaremos el test de durbin watson, este nos permitirá medir la autocorrelación serial de primer orden:
+
+```{r echo=FALSE}
 dwtest(lm1)
 ```
-2:no auto correlación 
-0 y 2: auto correlación positiva:
-no estoy bien de auto correlación bastante grande.
-2 y 4: auto correlación negativa
+_La forma de interpretarlo es:_
 
-otra forma de estimar los efectos fijos:
+**2:no auto correlación **
 
-**c**
-```{r}
+**0 y 2: auto correlación positiva:**
+
+**2 y 4: auto correlación negativa**
+
+De acuerdo a esto podemos decir que no estamos bien de auto correlación, es bastante grande, es decir que los efectos por año pasan de año en año, lo que implica que podríamos afirmar que si ayer hubo accidentes; hoy también habrán en nuestro modelo 1.
+
+
+Ahora exploraremos qué ocurre si incluimos más variables a nuestro modelo
+
+
+**Punto 1c**
+
+*Moldelo 2*
+```{r message=FALSE, warning=FALSE}
+cint$ln_ingreso <- log(cint$ingreso)
+
 lm2 <- lm(tasa_fatal ~ tasa_cint + vel_65
           + vel_70 
-          + niv_alc08
+          +niv_alc08
           +ed_alc21
-          + edad , data = cint)
-summary(lm2)
-dwtest(lm2)
+          +edad + ln_ingreso , data = cint)
+
+stargazer(lm2, 
+          header=FALSE,
+          type = "text",
+          title="Modelo 2",
+          digits=3, single.row=FALSE,
+          intercept.bottom=TRUE, 
+          covariate.labels=c("Tasa de uso cinturon"),
+          df = FALSE, style = "qje")
 ```
-intecepto sigue muy significativo y capuró la diferncia por estados de velocidad límite de 65
-el intercepto estaba sobre estimado
-tasa_cint estaba sub estimado
+De modelo 2 inferimos que el intercepto sigue muy significativo (***) y se capturó la diferencia por estados de velocidad límite de 65 ya que este límite 65 no fue significativo en este segundo modelo
+
+El intercepto estaba sobre estimado, pasamos de (0.026***) a (0.197 con significancia del 99% )
+-0.012***  0.004*** tasa_cint estaba sub estimado
 
 DPFJ: Diferencias que son propias de estados con limite 65
+
+```{r}
+dwtest(lm2)
+```
 
 
 d)
 ```{r}
-#putno estado sin intercepto
+#punto estado sin intercepto
 tablaestado<-table(cint$estado)
-tablaestado
+
 
 lmestado <- lm(tasa_fatal ~ tasa_cint + factor(estado)-1, data = cint)
-summary(lmestado)
-
+stargazer(lmestado, 
+          header=FALSE,
+          type = "text",
+          title="modelo 3",
+          digits=3, single.row=FALSE,
+          intercept.bottom=TRUE, 
+          covariate.labels=c("Tasa de uso cinturon"),
+          df = FALSE, style = "qje")
 
 DTESTADO<-dwtest(lmestado)
-print(DTESTADO)
+
 ```
 MEJORÓ EL DURBIN WATSON
 
