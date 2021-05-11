@@ -61,8 +61,7 @@ library(dplyr)
 library(hrbrthemes)
 library(viridis)
 library(reshape2)
-library(knitr)
-library(kableExtra)
+
 ```
 
 **Punto 1a**
@@ -77,17 +76,7 @@ cint83<-filter(cint,cint$ano=="1983") %>%
   slice(1:5) 
 cint83 <- 
   select(cint83, -c(cod,mmt,tasa_cint,vel_65,vel_70,ed_alc21,niv_alc08,ingreso,edad,primario,secundario))
-
-
-
-top_5_estados<-kable( cint83 , caption = "Top 5 estados con más tasas de fatalidad en 1983"
-       , align = c('l', 'c', 'r')
-       , col.names = c("Estado","Año","Tasa Fata")
-       , row.names = TRUE
-       , digits = 10
-       , format.args = list( decimal.mark = ",")
-      )
-top_5_estados
+cint83
 ```
 
 
@@ -163,7 +152,7 @@ La cantidad de muertes disminuyó para todos los que más muertes tenían en car
 
 
 
-*Punto 1b*
+**Punto 1b**
 
 Comenzaremos evaluando el impacto de la tasa del uso de cinturón para todos los estados en todos los años sobre la fatalidad carretera.
 
@@ -221,7 +210,7 @@ Ahora exploraremos qué ocurre si incluimos más variables a nuestro modelo
 
 **Punto 1c**
 
-_Modelo 2_
+_Modelo 2:_
 
 ```{r message=FALSE, warning=FALSE}
 cint$ln_ingreso <- log(cint$ingreso)
@@ -250,6 +239,7 @@ Las variables que no fueron significativas en este modelo son vel_6, ed_alc21 y 
 es decir que ni el límite de velocidad de 65 ni que la edad mímina de conducción de 21 años son estadísticamente significativas para afirmar que afectan la variabilidad de la cantidad de muertos por milla de carreterra.
 
 Al hacer el tesde de Durbin Watson, encontramos:
+
 ```{r}
 dwtest(lm2)
 ```
@@ -259,9 +249,11 @@ Cuando segregamos por más variables encontramos que la autocorrelación disminu
 
 _Efectos fijos por estado sin intercepto_
 
+_Modelo 3_
+
 Ahora usaremos cada uno de los 51 estados como una variable y así segregregamos las diferencias idiosincráticas de los estados:
 
-```{r}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 lmestado <- lm(tasa_fatal ~ tasa_cint + factor(estado)-1, data = cint)
 stargazer(lmestado, 
           header=FALSE,
@@ -271,29 +263,90 @@ stargazer(lmestado,
           intercept.bottom=TRUE, 
           covariate.labels=c("Tasa de uso cinturon"),
           df = FALSE, style = "qje")
-
-
 ```
-Interpretamos que:
+Del modelo 3 se afirma que todos los estados son significativos para explicar los cambios en las muertes, es decir que existen diferencias idiosincráticas entre estados.
 
-haciendo durbin:
+Haciendo un resumen del los 3 R^2 tenemos que
+
+_R^2 Modelo 1:_  0.162
+
+_R^2 Modelo 2:_  0.549
+
+_R^2 Modelo 3:_  0.991
+
+La variabilidad es mucho mejor explicada en el modelo 3, esto ocurre ya que se capturan las diferencias entra cada uno de los estados y estos jalan todos los efectos hacia cada una de las variables dummy haciendo que sean mucho menos volátiles y tengan menos ruido sus errores.
+
+_Frente a la tasa del uso de cinturon podemos decir que:_
+
+Estimación de la tasa en cada modelo:
+
+_Tasa modelo 1:_  -0.012*** 
+
+_Tasa modelo 2:_  0.004***
+
+_Tasa modelo 3:_ -0.017***   
+
+Aunque todos son significativos, el modelo 3 logró aislar las diferencias de sesgo por var. omitida, y aún así tuvo un coeficiente negativo, superior al del modelo 1 y 2, sí se puede decir que en promedio las muertes en carretera disminuten -0.017 cada vez que la propoporción de personas que usa el cinturón aumenta.
+
+Realizando el test de Durbin Watson, encontramos que:
 ```{r}
 dwtest(lmestado)
 ```
+El modelo 3, mejoró e hizo que la autocorrelación sea menor sea menor, haciendo que no caigamos en el error de series de tiempo donde lo que ocurrió el año pasado, ocurrirá también en el año presente.
 
 
-MEJORÓ EL DURBIN WATSON
 
-Comparación d
+*Punto 1E*
+
+
+
+Suma de residuales m1:
+```{r}
+sum1=sum(lm1$residuals^2)
+sum1
+```
+Suma de residuales m2:
+```{r}
+sum2=sum(lm2$residuals^2)
+sum2
+```
+parámetros:
+
+El modelo 1 (restricted) tiene:
+
+1 regresor: tasa_cint
+
+1 intercepto
+
+por lo tal tiene 2 parámetros; k1=2
+
+
+El modelo 2 (unrestricted) tiene:
+2 parámetros del modelo anterior +:
+
+vel_65, vel_70, niv_alc08, ed_alc21, ln(ingreso) y edad = 6 regresores
+
+Por lo cual tiene 8 parámetros; k2=8
 
 ```{r}
-summary(lmestado)$coef[1]
+k2=8
+k1=2
 ```
 
-E)
+Ftest manual:
+
 ```{r}
-añoslm <- lm(tasa_fatal ~ tasa_cint + factor(estado) + factor(ano)-1 , data = cint)
-summary(añoslm)
+f<-((sum1-sum2)/(k2-k1))/((sum2)/(765-8))
+f
 ```
+Comprobación modelo profesor:
+
+```{r}
+numerador1 <- ((summary(lm2)$r.squared - summary(lm1)$r.squared))/(8-2)
+denominador1 <- (1-summary(lm2)$r.squared)/(765-8)
+
+f_test1 <- numerador1/denominador1
+
+f_test1
 
 ```
