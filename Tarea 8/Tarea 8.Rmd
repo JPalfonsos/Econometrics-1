@@ -608,7 +608,68 @@ probmujer
 ```
 Entonces, la probabilidad de que una mujer con dichas caracteristicas viole la libertad condicional cae -2.557
 
+**Punto G: Probabilidades de cada individuo**
 
+```{r}
+predictions <- predict(glm1, newdata = test, type = "response")
+predictions
+```
+
+
+
+Aquí mostramos las probabilidades de cada persona de que perteneza al grupo de los que posiblemente violen la libertad condicional.
+
+La probabilidad más baja:
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+min(predictions)
+```
+
+La probabilidad más alta, hay un individuo que con el 90% de seguridad no respetará la libertad condicional
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+max(predictions)
+```
+**En terminos de ODDS**
+
+```{r echo=TRUE, warning=TRUE}
+odds_ob1 = predictions[1]/(1-predictions[1])
+
+odds_ob1
+```
+Por cada punto de incumplir, tiene 0.035 de ser bueno y cumplir la libertad condicional.
+
+
+**Punto I, Matrzz de confusión**
+```{r echo=FALSE}
+pred_0_1 <- ifelse(predictions > 0.5, 1, 0)
+pred_0_1
+```
+```{r}
+table(test$incump, pred_0_1)
+```
+TN FP
+FN TP
+
+- Entonces, habrán 167 falsos negativos, personas que no fue son bueno respetando pero que el modelo interpreto que sí
+-Hay 12 falsos positivos, presos a los que no les dieron libertal porque el modeo los juzgó mal
+
+**PUNTO J**
+Características del modelo, sensibilidad, especificidad,
+accuracy. Usando un threshold de 0.5.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Sensitivity TP/(TP+FN)
+12/(12+11)
+
+#Specificity TN/(TN+FP)
+167/(167+12)
+
+#Accuracy (TP+TN)/(TP+TN+FP+FN)
+(12+167)/(12+167+12+11)
+
+```
+La sensibilidad del modelo:  0.5217391
+La especificdad del modeo: 0.9329609
+y la precisión del modelo: 0.8861386
 
 
 
