@@ -492,7 +492,7 @@ stargazer(glm1,
           intercept.bottom=TRUE,
           df = FALSE, style = "qje")
 ```
-**Interpretación:**
+**Interpretación punto C:**
 
 Comencemos por raza con un coeficiente de -0.887, si este regresor es de 1, es porque el preso es blanco, es decir que si efectivamente es blanco su probabilidad de incumplir los términos de la libertal disminuye, si es 0; de otra raza, esta probabilidad no disminuye.
 
@@ -504,9 +504,34 @@ Cuantitativamente podemos afirmar que los presos que se elijan para su libertad 
 
 
 
-*Puntp 
+**Punto D**
+
+Mantiendo las demás variables constante, menos Concurso, la probabilidad de que incumpla los terminos de libertal, se daría por el siguiente modelo:
+
+$$incump = B_0 + B_1Concurso $$
+Reemplazando coeficientes:
+
+$$incump = -1.645  + 1.612(1)$$
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+print(1.612-1.645)
+```
+$$incump = -0.033$$
+
+La probabilidad de que la persona incumpla los términos de libertad condicional es de -0.033, es decir que solo si solo se tiene en cuenta si ha cometido varias veces delitos; eso solo variaría la probabilidad de violar los términos en -0.033.
 
 
+_Mantiendo lo mismo para cuando el condenado es de raza blanca:_
+
+Modelo:
+
+$$incump = B_0 + B_2Raza $$
+Reemplazando los coefficientes de Stargazer:
+
+$$incump = -1.645-0.887(1) $$
+```{r echo=FALSE}
+print(-1.645-0.0887)
+```
+Cuando la persona es de raza blanca y esto es la única variable que se tiene en cuenta, se afirma que ser blanco hace que la probabilidad de que viole los términos de la libertad bajo fianza varie -1.7337, verlo de esta forma implica bias de racismo, pero es estadísticamente significativo.
 
 
-
+**Punto E**
