@@ -294,9 +294,28 @@ dwtest(lmestado)
 ```
 El modelo 3, mejoró e hizo que la autocorrelación sea menor sea menor, haciendo que no caigamos en el error de series de tiempo donde lo que ocurrió el año pasado, ocurrirá también en el año presente.
 
+**Punto e**
 
+**Modelo 4**
 
-*Punto 1E*
+_Efectos fijo por estado y por año (efectos del tiempo), eliminando intercepto_
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+lm4 <- lm(tasa_fatal ~ tasa_cint + factor(estado) +factor(ano)-1, data = cint)
+stargazer(lm4, 
+          header=FALSE,
+          type = "text",
+          title="modelo 3",
+          digits=3, single.row=FALSE,
+          intercept.bottom=TRUE, 
+          covariate.labels=c("Tasa de uso cinturon"),
+          df = FALSE, style = "qje")
+
+```
+
+Los años del 84 al 88 no tienen significancia, no podemos afirmar que el efecto del tiempo afecte la tasa de accidentes en la via para este periodo
+
+*Punto 1F*
 
 
 
@@ -362,4 +381,7 @@ Valor critico: 3.674587
 
 Prueba F: 108.3615
 
+3.674587 < 108.3615, rechazo la hipótesis nula; el modelo 2 es mejor que el modelo 1
+
 *Punto 1G*
+
